@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useMemo } from "react";
-import useSWR from "swr";
+import useSWRImmutable from "swr/immutable";
 import { Poke } from "./useAllPokemon";
 
 const TYPE_URL = `https://pokeapi.co/api/v2/type/`;
@@ -24,14 +24,17 @@ export type PokeTypeDetail = {
 };
 
 const usePokeType = () => {
-  const { data: typesRes, isLoading: typesIsLoading } = useSWR(
+  const { data: typesRes, isLoading: typesIsLoading } = useSWRImmutable(
     TYPE_URL,
     typesFetcher
   );
 
-  const types = (typesRes?.data.results ?? []) as PokeType[];
+  const types = useMemo(
+    () => (typesRes?.data.results ?? []) as PokeType[],
+    [typesRes]
+  );
 
-  const { data: typeDetailsRes } = useSWR(
+  const { data: typeDetailsRes } = useSWRImmutable(
     types.length ? [TYPE_URL, types.map((type) => type.name)] : null,
     typeDetailsFetcher
   );
@@ -43,7 +46,9 @@ const usePokeType = () => {
         .map((type) => ({
           id: type.id,
           name: type.name,
-          pokemons: [...type.pokemon.map((poke) => ({ ...poke.pokemon }))] as Poke[],
+          pokemons: [
+            ...type.pokemon.map((poke) => ({ ...poke.pokemon })),
+          ] as Poke[],
         })) ?? [],
     [typeDetailsRes]
   ) as PokeTypeDetail[];

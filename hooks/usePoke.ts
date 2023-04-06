@@ -16,17 +16,21 @@ const useType = () => {
 
   const getNext = () => setPagination(pagination + 1);
   const getPrevious = () => setPagination(pagination - 1);
-  const addType = (type: string) => setPickedTypes([...pickedTypes, type]);
+  const addType = (type: string) => {
+    setPickedTypes([...pickedTypes, type]);
+    setPagination(0);
+  };
   const removeType = (type: string) => {
     pickedTypes.splice(pickedTypes.indexOf(type), 1);
     setPickedTypes([...pickedTypes]);
+    setPagination(0);
   };
 
   const displayedPokes = ((): { pokes: Poke[]; total: number } => {
     const pokes = pickedTypes.length ? getPokesByTypes(pickedTypes) : allPokes;
 
     const paginatedPokes = getPokesByPage(pokes, pagination);
-    
+
     return {
       pokes: paginatedPokes,
       total: pokes.length,

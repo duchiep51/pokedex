@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { usePokeContext } from "../../contexts/PokeContext";
 
 const extractNumberFromString = (str: string) =>
@@ -27,20 +27,18 @@ const PokeContainer = () => {
     );
 
   const disablePrevious = currentPage === 0;
-  const disableNext = currentPage + 1 === totalPage;
+  const disableNext = total === 0 || currentPage + 1 === totalPage;
 
   return (
     <View>
-      <View>
-        <Text>{total > 0 ? `${total} results found` : "No result found"}</Text>
-      </View>
-
-      <View className="grid grid-cols-3 gap-4 bg-red">
-        {(pokes || []).map((poke, index) => (
+      <View className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-4">
+        {pokes?.map((poke, index) => (
           <View key={index} className="justify-center items-center">
-            <Image
+            <img
+              src={getImageURL(extractNumberFromString(poke.url))}
+              alt={poke.name}
               className="w-24 h-24"
-              source={getImageURL(extractNumberFromString(poke.url)) as any}
+              loading="lazy"
             />
             <Text>{poke.name}</Text>
           </View>
