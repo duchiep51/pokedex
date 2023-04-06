@@ -2,7 +2,7 @@
 
 The application displays all images of all pokemons using [https://pokeapi.co/] API.
 
-## Live demo is on: [https://pokedex-psi-sand.vercel.app/]
+Live demo is on: [https://pokedex-psi-sand.vercel.app/]
 
 ## Getting Started
 
