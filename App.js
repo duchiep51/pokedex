@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import PokeProvider from "./contexts/PokeContext";
-import PokeContainer from "./src/components/PokeContainer";
-import TypeContainer from "./src/components/TypeContainer";
+import PokeContainer from "./src/components/PokeSection/PokeContainer";
+import TypeContainer from "./src/components/TypeSection/TypeContainer";
 import "./style.css";
 import { SWRConfig } from "swr";
 

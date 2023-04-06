@@ -1,4 +1,4 @@
-import { usePokeContext } from "../../contexts/PokeContext";
+import { usePokeContext } from "../../../contexts/PokeContext";
 
 const TypeButton = ({ typeName }: { typeName: string }) => {
   const { addType, removeType, pickedTypes } = usePokeContext();

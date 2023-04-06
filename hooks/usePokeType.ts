@@ -1,26 +1,15 @@
 import axios from "axios";
 import { useMemo } from "react";
 import useSWRImmutable from "swr/immutable";
-import { Poke } from "./useAllPokemon";
+import { TYPE_URL } from "../constants";
+import { Poke, PokeType, PokeTypeDetail } from "../types";
 
-const TYPE_URL = `https://pokeapi.co/api/v2/type/`;
 const typesFetcher = (url: string) => axios.get(url);
 const typeDetailsFetcher = ([url, types]: (string | string[])[]) => {
   const requests = (types as string[]).map((type) =>
     axios.get(`${url}${type}`)
   );
   return Promise.all(requests);
-};
-
-export type PokeType = {
-  name: string;
-  url: string;
-};
-
-export type PokeTypeDetail = {
-  id: number;
-  name: string;
-  pokemons: Poke[];
 };
 
 const usePokeType = () => {

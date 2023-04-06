@@ -1,14 +1,17 @@
+import { GET_POKE_URL } from "./../constants";
 import { useState } from "react";
-import useAllPokemon, { Poke } from "./useAllPokemon";
+import useSWRImmutable from "swr/immutable";
+import { multipleFetcher } from "../apis/fetcher";
+import { POKE_LIMIT } from "../constants";
+import { Poke, PokeDetail } from "../types";
+import useAllPokemon from "./useAllPokemon";
 import usePokeType from "./usePokeType";
-
-const POKE_LIMIT = 48;
 
 const getPokesByPage = (pokes: Poke[], page: number) =>
   pokes?.slice(page * POKE_LIMIT, (page + 1) * POKE_LIMIT);
 
 const useType = () => {
-  const { allPokes, isLoading: allPokesLoading } = useAllPokemon();
+  const { allPokes } = useAllPokemon();
   const { types, typesIsLoading, getPokesByTypes } = usePokeType();
 
   const [pagination, setPagination] = useState<number>(0);
@@ -39,10 +42,25 @@ const useType = () => {
 
   const totalPage = Math.ceil(displayedPokes.total / POKE_LIMIT);
 
+  const { data: pokesDetailsRes, isLoading: pokeDetailsIsLoading } =
+    useSWRImmutable(
+      displayedPokes.pokes.length > 0
+        ? [GET_POKE_URL, displayedPokes.pokes.map((poke) => poke.name)]
+        : null,
+      multipleFetcher
+    );
+
+  const pokeDetails = pokesDetailsRes
+    ?.map((res) => res.data)
+    .map((detail) => ({
+      name: detail.name,
+      image: detail.sprites.other["official-artwork"].front_default,
+    })) as PokeDetail[];
+
   return {
-    pokes: displayedPokes.pokes ?? [],
+    pokes: pokeDetails ?? [],
     total: displayedPokes.total ?? 0,
-    allPokesLoading,
+    pokeDetailsIsLoading,
     getNext,
     getPrevious,
     currentPage: pagination,
